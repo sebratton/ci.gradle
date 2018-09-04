@@ -34,6 +34,7 @@ class Liberty implements Plugin<Project> {
     final String JST_EAR_FACET_VERSION = '6.0'
 
     void apply(Project project) {
+        println '*** In plugin: liberty-gradle-plugin:2.6.1-SNAPSHOT'
         project.extensions.create('liberty', LibertyExtension)
         project.extensions.create('arquillianConfiguration', ArquillianExtension)
 
