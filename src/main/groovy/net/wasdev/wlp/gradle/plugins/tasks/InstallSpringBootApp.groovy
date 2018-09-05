@@ -46,11 +46,11 @@ class InstallSpringBootApp extends InstallAppsTask {
     }
 
     String getTargetLibCachePath() {
-        new File(getInstallDir(project), "usr/shared/resources").absolutePath
+        new File(getInstallDir(project), "usr/shared/resources/lib.index.cache").absolutePath
     }
 
     String getTargetThinAppPath() {
-        createApplicationFolder("dropins/spring").absolutePath
+        new File (createApplicationFolder("dropins/spring").absolutePath, "${project.bootJar.archiveName}")
     }
 
     @TaskAction
