@@ -33,11 +33,10 @@ class InstallSpringBootApp extends InstallAppsTask {
         })
     }
 
-    String getArchiveOutputPath() {
+    String getBootArchiveOutputPath() {
         /*This is for springboot plugin >= 2.0.
         project.plugins.hasPlugin(org.springboot)
           TODO add logic for < 2.0.0  */
-
         return project.bootJar.archivePath.getAbsolutePath()
     }
 
@@ -55,21 +54,13 @@ class InstallSpringBootApp extends InstallAppsTask {
 
     @TaskAction
     void install( ) {
-        if (server.apps != null && !server.apps.isEmpty()) {
-            createApplicationFolder('apps')
-            Tuple appsLists = splitAppList(server.apps)
-            installMultipleApps(appsLists[0], 'apps')
-            installFileList(appsLists[1], 'apps')
-        }
-        if (server.dropins != null && !server.dropins.isEmpty()) {
-            createApplicationFolder('dropins')
-            Tuple dropinsLists = splitAppList(server.dropins)
-            installMultipleApps(dropinsLists[0], 'dropins')
-            installFileList(dropinsLists[1], 'dropins')
-        }
-
         installSpringBootFeature()
+        checkForCommandLineUtil()
         invokeThinOperation()
+    }
+
+    private checkForCommandLineUtil() {
+        //if ()
     }
 
     private invokeThinOperation() {
@@ -79,12 +70,10 @@ class InstallSpringBootApp extends InstallAppsTask {
                 classname: 'net.wasdev.wlp.ant.SpringBootUtilTask',
                 classpath: project.buildscript.configurations.classpath.asPath)
 
-        params.put('sourceAppPath', getArchiveOutputPath())
-        //params.put('parentLibCachePath', getParentLibCachePath())
+        params.put('sourceAppPath', getBootArchiveOutputPath())
         params.put('targetLibCachePath', getTargetLibCachePath())
         params.put('targetThinAppPath', getTargetThinAppPath())
         project.ant.invokeUtil(params)
-
     }
 
     private installSpringBootFeature() {
@@ -94,7 +83,7 @@ class InstallSpringBootApp extends InstallAppsTask {
                 classname: 'net.wasdev.wlp.ant.InstallFeatureTask',
                 classpath: project.buildscript.configurations.classpath.asPath)
 
-        params.put('acceptLicense', true)
+        params.put('acceptLicense', server.features.acceptLicense)
         params.put('name', "springBoot-2.0")
         project.ant.installFeature(params)
     }

@@ -110,6 +110,8 @@ class InstallLibertyTask extends AbstractTask {
 
         result.put('maxDownloadTime', project.liberty.install.maxDownloadTime)
 
+        result.put('useOpenLiberty', project.liberty.install.useOpenLiberty)
+
         result.put('offline', project.gradle.startParameter.offline)
 
         return result
