@@ -62,7 +62,6 @@ class InstallAppsTask extends AbstractServerTask {
     @TaskAction
     void installApps() {
         configureApps(project)
-        println '*********** server.apps ' + server.apps
         if (server.apps != null && !server.apps.isEmpty()) {
             createApplicationFolder('apps')
             Tuple appsLists = splitAppList(server.apps)
@@ -97,10 +96,6 @@ class InstallAppsTask extends AbstractServerTask {
     }
 
     private void installProjectArchive(Task task, String appsDir){
-        println 'task.archivePath.toPath() ' + task.archivePath.toPath()
-        println 'new File(getServerDir(project), "/" + appsDir + "/" + getArchiveName(task)).toPath()  ' +
-                new File(getServerDir(project), "/" + appsDir + "/" + getArchiveName(task)).toPath()
-
       Files.copy(task.archivePath.toPath(), new File(getServerDir(project), "/" + appsDir + "/" + getArchiveName(task)).toPath(), StandardCopyOption.REPLACE_EXISTING)
       validateAppConfig(getArchiveName(task), task.baseName, appsDir)
     }
@@ -283,6 +278,7 @@ class InstallAppsTask extends AbstractServerTask {
       switch (getPackagingType()) {
         case "ear":
         case "war":
+        case "bootJar":
             return true;
         default:
             return false;

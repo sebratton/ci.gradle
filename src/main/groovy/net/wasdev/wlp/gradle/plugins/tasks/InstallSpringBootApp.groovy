@@ -20,6 +20,8 @@ import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskAction
 
+import java.text.MessageFormat
+
 class InstallSpringBootApp extends InstallAppsTask {
 
     String taskName = 'InstallSpringBootApp'
@@ -54,6 +56,12 @@ class InstallSpringBootApp extends InstallAppsTask {
 
     @TaskAction
     void install( ) {
+        if (server.looseApplication) {
+            logger.info(MessageFormat.format(("Loose application configuration is not supported for spring boot applications." +
+                    " The project artifact will be installed as an archive file."),
+                    ))
+            server.looseApplication = false;
+        }
         installSpringBootFeature()
         checkForCommandLineUtil()
         invokeThinOperation()
@@ -77,6 +85,7 @@ class InstallSpringBootApp extends InstallAppsTask {
     }
 
     private installSpringBootFeature() {
+        //TODO check if product version NOT OL. Only neeed to install feature on WLP
         Map<String, String> params = buildLibertyMap(project);
 
         project.ant.taskdef(name: 'installFeature',
